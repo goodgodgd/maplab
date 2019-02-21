@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 ROSBAG=$1
 POSE_FILE=$2
-NCAMERA_CALIBRATION="${ROVIO_CONFIG_DIR}ncamera-euroc.yaml"
+NCAMERA_CALIBRATION="${ROVIO_CONFIG_DIR}ncamera-tumvi.yaml"
 IMU_PARAMETERS_MAPLAB="${ROVIO_CONFIG_DIR}imu-adis16488.yaml"
 IMU_PARAMETERS_ROVIO="${ROVIO_CONFIG_DIR}imu-sigmas-rovio.yaml"
 REST=$@
@@ -20,5 +20,5 @@ rosrun rovioli rovioli \
   --export_estimated_poses_to_csv=$POSE_FILE  $REST
 
 # for VO only mode, "optimize_map_to_localization_map" and "map_builder_save_image_as_resources", 
-# are set false and "save_map_folder" leave null
+# are set false
 
