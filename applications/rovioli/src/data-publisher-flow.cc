@@ -109,6 +109,7 @@ void DataPublisherFlow::attachToMessageFlow(message_flow::MessageFlow* flow) {
   // CSV export for end-to-end test.
   if (!FLAGS_export_estimated_poses_to_csv.empty()) {
     // Lambda function will take ownership.
+    // LookAtHere
     std::shared_ptr<common::FileLogger> file_logger =
         std::make_shared<common::FileLogger>(
             FLAGS_export_estimated_poses_to_csv);

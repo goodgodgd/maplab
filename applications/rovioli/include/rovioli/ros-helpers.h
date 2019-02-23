@@ -43,8 +43,10 @@ inline vio::ImageMeasurement::Ptr convertRosImageToMaplabImage(
   cv_bridge::CvImageConstPtr cv_ptr;
   try {
     // Convert the image to MONO8 if necessary.
-    cv_ptr = cv_bridge::toCvShare(
-        image_message, sensor_msgs::image_encodings::MONO8);
+    if(image_message->encoding == sensor_msgs::image_encodings::MONO16)
+      cv_ptr = cv_bridge::toCvShare(image_message, sensor_msgs::image_encodings::MONO16);
+    else
+      cv_ptr = cv_bridge::toCvShare(image_message, sensor_msgs::image_encodings::MONO8);
   } catch (const cv_bridge::Exception& e) {  // NOLINT
     LOG(FATAL) << "cv_bridge exception: " << e.what();
   }
@@ -55,7 +57,13 @@ inline vio::ImageMeasurement::Ptr convertRosImageToMaplabImage(
   // uint8_t array inside CvImage and not the cv::Mat itself. Keeping the
   // data alive without holding on to the CvImage is not possible without
   // letting all the code depend on ROS and boost.
-  image_measurement->image = cv_ptr->image.clone();
+  cv::Mat image = cv_ptr->image.clone();
+  if(image.type() == CV_16UC1)
+  {
+    image.convertTo(image, CV_8UC1, 1./180.);
+    // std::cout << "convert 16bit image" << std::endl;
+  }
+  image_measurement->image = image;
   image_measurement->timestamp =
       rosTimeToNanoseconds(image_message->header.stamp);
   image_measurement->camera_index = camera_idx;
